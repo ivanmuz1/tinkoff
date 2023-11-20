@@ -43,7 +43,7 @@ describe('es6', () => {
             assert.strictEqual(!!dic, true);
         });
 
-        it('на несуществвующий ключ возвращается undefined', () => {
+        it('на несуществвующий ключ возвращается undefined', () => { 
             const dic = new core.Dictionary();
             assert.strictEqual(dic.get("b"), undefined);
         });

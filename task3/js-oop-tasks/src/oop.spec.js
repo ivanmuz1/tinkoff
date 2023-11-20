@@ -43,7 +43,7 @@ describe('ООП', () => {
             assert.strictEqual(point.z, -3);
         });
 
-        it('Point3D имеет статический метод vectorLength', () => {
+        it('Point3D имеет статический метод vectorLength', () => { 
             const pointA = new core.Point3D(1, 2, -3);
             const pointB = new core.Point3D(1, -1, 1);
 

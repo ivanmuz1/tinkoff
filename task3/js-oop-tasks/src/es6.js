@@ -43,7 +43,7 @@ function calculateSalaryDifference(array) {
 // присмотритесь к коллекции "Map"
 // Словарь - (string, string), и все это не null и не undefined
 // * покройте класс тестами
-class Dictionary {
+class Dictionary { 
     constructor(){
         this._data = new Map();
     }

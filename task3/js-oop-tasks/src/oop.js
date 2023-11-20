@@ -47,7 +47,7 @@ class Queue {
         this._data = Array.isArray(data) ? data : [];
     }
 
-    push(element) {
+    push(element) { 
         this._data.push(element);
     }
 
