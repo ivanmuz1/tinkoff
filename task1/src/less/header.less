@@ -1,0 +1,64 @@
+.header {
+    height: 64px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-leftside {
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 48px;
+
+    &__nav {
+        display: flex;
+        gap: 24px;
+
+        & li {
+            list-style-type: none;
+        }
+        
+        &__link {
+            height: 64px;
+
+            display: flex;
+            align-items: center;
+            
+            color: rgba(0, 0, 0, 0.54);
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 20px;
+            
+            &:hover{
+                color: rgba(0, 0, 0, 1);
+                box-shadow: inset 0px -2px 0px #666666;
+            }
+
+            &__active {
+                color: rgba(0, 0, 0, 1);
+                box-shadow: inset 0px -2px 0px #666666;
+            }
+        }
+    }
+}
+
+.header-rightside {
+    &__login-link {
+        height: 64px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+
+        color: #336FEE;
+        text-decoration: none;
+
+        &:hover {
+            box-shadow: inset 0px -2px 0px #336FEE;
+        }
+    }
+}
