@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <header class="header">
+      <p>Музырев Иван 6407</p>
+      <button id="setup-button" class="header__button" type="button">Засетапить начальные значения</button>
+    </header>
+
+    <main class="main">
+
+      <div class="form-block">
+        <p class="form-block__title">Форма добавления карточки товара</p>
+        <form id="card-form" class="form-block__form">
+          <input class="form-block__input" name="name" type="text" placeholder="Название" required></input>
+          <input class="form-block__input" name="image" type="url" placeholder="Ссылка на изображение"></input>
+          <textarea class="form-block__input-description" name="description"  placeholder="Описание"></textarea>
+          <input class="form-block__input" name="id" type="number" min="0" placeholder="Код товара" required></input>
+          <button class="form-block__submit" id="submit-button" type="submit">Сохранить</button>
+          <button class="form-block__submit invisible" id="edit-button">Сохранить</button>
+        </form>
+      </div>
+
+      <div class="verticalLine"></div>
+
+      <div class="list-block">
+        <p class="list-block__title">Витрина карточек</p>
+        <div class="list-block__list">
+        </div>
+      </div>
+    </main>
+    
+    <script type="module" src="./main.js"></script>
+  </body>
+
+</html>
