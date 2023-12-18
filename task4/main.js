@@ -1,165 +1,160 @@
-import 'normalize.css';
-import './index.less';
+import './index.css';
+import 'normalize.css'
+import jsonFileSetUp from './cardsData.json';
 
-class Card {
-    constructor(name, url, desc, id) {
-        this.name = name;
-        this.url = url;
-        this.description = desc;
-        this.id = id;
-    }
+function createElementWithClass(elementType, className) {
+    const element = document.createElement(elementType);
+    element.classList.add(className);
+    return element;
 }
 
-function constructCards() {
-    let cards = JSON.parse(window.localStorage.getItem("cards"));
-    let i = 0;
-    for (let card of (cards ? cards : []) ){
-        const divCard = document.createElement("div");
-        divCard.id = `card${i}`;
-        divCard.setAttribute('class', "list-block__card");
-        document.getElementsByClassName("list-block__list")[0].appendChild(divCard);
+function createCardElement(card, index) {
+    const divCard = createElementWithClass("div", "list-block__card");
+    divCard.id = `card${index}`;
 
-        const divCardTop = document.createElement("div");
-        divCardTop.id = `cardTop${i}`;
-        divCardTop.setAttribute('class', "list-block__card-top");
-        document.getElementById(`card${i}`).appendChild(divCardTop);
+    const divCardTop = createElementWithClass("div", "list-block__card-top");
+    divCardTop.id = `cardTop${index}`;
+    divCard.appendChild(divCardTop);
 
-        const divCardId = document.createElement("div");
-        divCardId.id = `cardId${i}`;
-        divCardId.setAttribute('class', "list-block__card-id");
-        divCardId.textContent = `Id: ${card.id}`;
-        document.getElementById(`cardTop${i}`).appendChild(divCardId);
-        
-        const divCardMain = document.createElement("div");
-        divCardMain.id = `cardMain${i}`;
-        divCardMain.setAttribute('class', "list-block__card-main");
-        document.getElementById(`card${i}`).appendChild(divCardMain);
+    const divCardId = createElementWithClass("div", "list-block__card-id");
+    divCardId.id = `cardId${index}`;
+    divCardId.textContent = `Id: ${card.id}`;
+    divCardTop.appendChild(divCardId);
 
-        const divCardImg = document.createElement("img");
-        divCardImg.id = `cardImg${i}`;
-        divCardImg.setAttribute('class', "list-block__card-img");
-        divCardImg.src = `${card.url}`;
-        document.getElementById(`cardMain${i}`).appendChild(divCardImg);
+    const divCardMain = createElementWithClass("div", "list-block__card-main");
+    divCardMain.id = `cardMain${index}`;
+    divCard.appendChild(divCardMain);
 
-        const divCardText = document.createElement("div");
-        divCardText.id = `cardText${i}`;
-        divCardText.setAttribute('class', "list-block__card-text");
-        document.getElementById(`cardMain${i}`).appendChild(divCardText);
+    const divCardImg = createElementWithClass("img", "list-block__card-image");
+    divCardImg.id = `cardImg${index}`;
+    divCardImg.src = card.image;
+    divCardMain.appendChild(divCardImg);
 
-        const divCardName = document.createElement("div");
-        divCardName.id = `cardName${i}`;
-        divCardName.setAttribute('class', "list-block__card-name");
-        divCardName.textContent = `${card.name}`;
-        document.getElementById(`cardText${i}`).appendChild(divCardName);
+    const divCardText = createElementWithClass("div", "list-block__card-text");
+    divCardText.id = `cardText${index}`;
+    divCardMain.appendChild(divCardText);
 
-        const divCardDescription = document.createElement("div");
-        divCardDescription.id = `cardDescription${i}`;
-        divCardDescription.setAttribute('class', "list-block__card-description");
-        divCardDescription.textContent = `${card.description}`;
-        document.getElementById(`card${i}`).appendChild(divCardDescription);
+    const divCardName = createElementWithClass("div", "list-block__card-name");
+    divCardName.id = `cardName${index}`;
+    divCardName.textContent = card.name;
+    divCardText.appendChild(divCardName);
 
-        const divCardBottom = document.createElement("div");
-        divCardBottom.id = `cardBottom${i}`;
-        divCardBottom.setAttribute('class', "list-block__card-bottom");
-        document.getElementById(`card${i}`).appendChild(divCardBottom);
+    const divCardDescription = createElementWithClass("div", "list-block__card-description");
+    divCardDescription.id = `cardDescription${index}`;
+    divCardDescription.textContent = card.description;
+    divCard.appendChild(divCardDescription);
 
-        const divCardRed = document.createElement("a");
-        divCardRed.id = `cardRed${i}`;
-        divCardRed.setAttribute('class', "list-block__card-red");
-        divCardRed.addEventListener('click', InForm);
-        divCardRed.pos = i;
-        divCardRed.textContent = 'Редактировать';
-        document.getElementById(`cardBottom${i}`).appendChild(divCardRed);
+    const divCardBottom = createElementWithClass("div", "list-block__card-bottom");
+    divCardBottom.id = `cardBottom${index}`;
+    divCard.appendChild(divCardBottom);
 
-        const divCardDel = document.createElement("a");
-        divCardId.id = `cardDel${i}`;
-        divCardDel.setAttribute('class', "list-block__card-red");
-        divCardDel.textContent = `Удалить`;
-        divCardDel.addEventListener('click', deleteCard);
-        divCardDel.pos = i;
-        document.getElementById(`cardBottom${i}`).appendChild(divCardDel);
+    const divCardRed = createElementWithClass("a", "list-block__card-red");
+    divCardRed.id = `cardRed${index}`;
+    divCardRed.addEventListener('click', fillForm);
+    divCardRed.pos = index;
+    divCardRed.textContent = 'Редактировать';
+    divCardBottom.appendChild(divCardRed);
 
-        ++i;
-    }
+    const divCardDel = createElementWithClass("a", "list-block__card-red");
+    divCardDel.id = `cardDel${index}`;
+    divCardDel.textContent = `Удалить`;
+    divCardDel.addEventListener('click', deleteCard);
+    divCardDel.pos = index;
+    divCardBottom.appendChild(divCardDel);
+
+    return divCard;
 }
 
-function setupCards () {
-    let one = new Card("Один", "https://sun6-22.userapi.com/s/v1/ig2/rdXdOMgjScCFamvLBrRs7KGvVV5aCEkVWQkq2ptiRGT3QBrGb3iZoo-UMdZOkeBax7DsB_PRRhjGcePdpq4hISq-.jpg?size=2560x2560&quality=95&crop=0,0,2560,2560&ava=1", "Единичка", 1);
-    let two = new Card("Два", "https://i.sadvitrina.com/diygoods/80361/tsifra_2_larvij_bolshaya_tsvet_chyorniy_1_pic.jpg", "Двоечка", 2);
-    let three = new Card("Три", "https://res.cloudinary.com/lmru/image/upload/LMCode/15632861.jpg", "Ну хотя бы троечка", 3);
-    let array = [one, two, three];
-    window.localStorage.clear();
-    window.localStorage.setItem('cards', JSON.stringify(array));
-    location.reload();
+function renderCards() {
+    const cardsContainer = document.querySelector(".list-block__list");
+    const cardsData = JSON.parse(localStorage.getItem('cards')) || [];
+
+    cardsContainer.innerHTML = '';
+    cardsData.forEach((card, index) => cardsContainer.appendChild(createCardElement(card, index)));
+}
+
+function standardСards() {
+    localStorage.setItem('cards', JSON.stringify(jsonFileSetUp));
+    renderCards();
 }
 
 function serializeForm(formNode, obj) {
-    const data = Array.from((new FormData(formNode)).entries());
-    let card = obj;
-    for (let i = 0; i < data.length; ++i) {
-        let [key, value] = data[i];
-        switch (true) {
-            case key == 'name':
-                card.name = value;
-                break;
-            case key == 'url':
-                card.url = value;
-                break;
-            case key == 'description':
-                card.description = value;
-                break;
-            case key == 'ID':
-                card.id = value;
-                break;
-            default: break;
+    const fieldMappings = {
+        'name': 'name',
+        'image': 'image',
+        'description': 'description',
+        'id': 'id'
+    };
+
+    const formData = new FormData(formNode);
+
+    Object.entries(fieldMappings).forEach(([formKey, cardKey]) => {
+        if (formData.has(formKey)) {
+            obj[cardKey] = formData.get(formKey);
         }
-    }
-    return card;
-}
-  
-function pushCard(event) {
-    let card = serializeForm(applicantForm, new Card());
-    let cards = JSON.parse(window.localStorage.getItem("cards"));
-    cards.push(card);
-    window.localStorage.clear();
-    window.localStorage.setItem('cards', JSON.stringify(cards));
-}
-  
-function deleteCard(event) { 
-    let cards = JSON.parse(window.localStorage.getItem("cards"));
-    cards.splice(event.target.pos, 1);
-    window.localStorage.setItem('cards', JSON.stringify(cards));
-    location.reload();
+    });
+
+    return obj;
 }
 
-function InForm(event) {
-    let cards = JSON.parse(window.localStorage.getItem("cards"));
-    let card = cards.at(event.target.pos);
-    document.getElementsByName('name')[0].value = card.name;
-    document.getElementsByName('url')[0].value = card.url;
-    document.getElementsByName('description')[0].value = card.description;
-    document.getElementsByName('ID')[0].value = card.id;
+function saveCard(event) {
+    const card = serializeForm(applicantForm, {});
+
+    if (!card.name || !card.image || !card.description || !card.id) {
+        alert("Поля не заполнены");
+        return;
+    }
+
+    let cards = JSON.parse(localStorage.getItem("cards")) || [];
+    cards.push(card);
+    
+    localStorage.setItem('cards', JSON.stringify(cards));
+    renderCards();
+}
+
+function deleteCard(event) {
+    const cards = JSON.parse(localStorage.getItem("cards")) || [];
+    const updatedCards = cards.filter((_, index) => index !== event.target.pos);
+
+    localStorage.setItem('cards', JSON.stringify(updatedCards));
+    renderCards();
+}
+
+function fillForm(event) {
+    const cards = JSON.parse(localStorage.getItem("cards")) || [];
+    const card = cards[event.target.pos];
+
+    document.getElementsByName('name')[0].value = card.name || '';
+    document.getElementsByName('image')[0].value = card.image || '';
+    document.getElementsByName('description')[0].value = card.description || '';
+    document.getElementsByName('id')[0].value = card.id || '';
+
     document.getElementById('submit-button').classList.add('invisible');
-    document.getElementById('edit-button').classList.remove('invisible');
-    document.getElementById('edit-button').pos = event.target.pos;
+    const editButton = document.getElementById('edit-button');
+    editButton.classList.remove('invisible');
+    editButton.pos = event.target.pos;
 }
 
 function editCard(event) {
-    let cards = JSON.parse(window.localStorage.getItem("cards"));
-    let card = serializeForm(applicantForm, cards.at(event.target.pos));
-    window.localStorage.clear();
-    window.localStorage.setItem('cards', JSON.stringify(cards));
+    let cards = JSON.parse(localStorage.getItem("cards")) || [];
+    let editedCard = serializeForm(applicantForm, {});
+    
+    cards[event.target.pos] = editedCard;
+
+    localStorage.setItem('cards', JSON.stringify(cards));
+
     document.getElementById('submit-button').classList.remove('invisible');
     document.getElementById('edit-button').classList.add('invisible');
-
+    renderCards();
 }
 
-const applicantForm = document.getElementById('card-form')
+const applicantForm = document.getElementById('card-form');
 const setupButton = document.getElementById('setup-button');
 const editButton = document.getElementById('edit-button');
 const submitButton = document.getElementById('submit-button');
 
-setupButton.addEventListener('click', setupCards);
-submitButton.addEventListener('click', pushCard);
+setupButton.addEventListener('click', standardСards);
+submitButton.addEventListener('click', saveCard);
 editButton.addEventListener('click', editCard);
-window.onload = constructCards;
+
+renderCards();
