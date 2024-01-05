@@ -248,3 +248,23 @@ body {
   --error-bg: rgba(224, 31, 25, 0.12);
   --selection: rgba(112, 182, 246, 0.12);
 }
+
+.loader {
+  border: 8px solid #f3f3f3; 
+  border-top: 8px solid #ffdd2d; 
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 1s linear infinite;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -25px; 
+  margin-left: -25px; 
+  display: none; 
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

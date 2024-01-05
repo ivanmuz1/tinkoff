@@ -11,7 +11,7 @@
 
   <body>
     <header class="header">
-      <p>Музырев Иван 6407</p>
+      <p id="header__text"></p>
       <button id="setup-button" class="header__button" type="button">Засетапить начальные значения</button>
     </header>
 
@@ -34,8 +34,25 @@
       <div class="list-block">
         <p class="list-block__title">Витрина карточек</p>
         <div class="list-block__list">
+          <div class="list-block__card">
+            <div class="list-block__card-top">
+                <div class="list-block__card-id">Id: </div>
+            </div>
+            <div class="list-block__card-main">
+                <img class="list-block__card-image" src="https://w.forfun.com/fetch/da/daf8eb568fea522f6701fb9c66378cdc.jpeg" alt="Card Image">
+                <div class="list-block__card-text">
+                    <div class="list-block__card-name">Карточка</div>
+                    <div class="list-block__card-description"></div>
+                </div>
+            </div>
+            <div class="list-block__card-bottom">
+                <a class="list-block__card-red" href="#">Редактировать</a>
+                <a class="list-block__card-red" href="#">Удалить</a>
+            </div>
+        </div>
         </div>
       </div>
+      <div id="loader" class="loader"></div>
     </main>
     
     <script type="module" src="./main.js"></script>

@@ -1,4 +1,11 @@
-[
+{
+  "items": [
+    {
+      "name": "Три",
+      "image": "https://res.cloudinary.com/lmru/image/upload/LMCode/15632861.jpg",
+      "description": "Ну хотя бы троечка",
+      "id": 3
+    },
     {
       "name": "Один",
       "image": "https://sun6-22.userapi.com/s/v1/ig2/rdXdOMgjScCFamvLBrRs7KGvVV5aCEkVWQkq2ptiRGT3QBrGb3iZoo-UMdZOkeBax7DsB_PRRhjGcePdpq4hISq-.jpg?size=2560x2560&quality=95&crop=0,0,2560,2560&ava=1",
@@ -10,11 +17,11 @@
       "image": "https://i.sadvitrina.com/diygoods/80361/tsифра_2_larvij_bolshaya_tsvet_chyorniy_1_pic.jpg",
       "description": "Двоечка",
       "id": 2
-    },
-    {
-      "name": "Три",
-      "image": "https://res.cloudinary.com/lmru/image/upload/LMCode/15632861.jpg",
-      "description": "Ну хотя бы троечка",
-      "id": 3
     }
-]
+  ],
+  "creatorInfo": {
+    "name": "Музырев Иван",
+    "group": "6407",
+    "repo": "https://github.com/ivanmuz1"
+  }
+}

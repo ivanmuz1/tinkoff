@@ -1,6 +1,31 @@
 import './index.css';
 import 'normalize.css'
-import jsonFileSetUp from './cardsData.json';
+
+
+
+
+const standartCardsArray = [
+    {
+        "name": "Один",
+        "image": "https://sun6-22.userapi.com/s/v1/ig2/rdXdOMgjScCFamvLBrRs7KGvVV5aCEkVWQkq2ptiRGT3QBrGb3iZoo-UMdZOkeBax7DsB_PRRhjGcePdpq4hISq-.jpg?size=2560x2560&quality=95&crop=0,0,2560,2560&ava=1",
+        "description": "Единичка",
+        "id": 1
+      },
+      {
+        "name": "Два",
+        "image": "https://i.sadvitrina.com/diygoods/80361/tsифра_2_larvij_bolshaya_tsvet_chyorniy_1_pic.jpg",
+        "description": "Двоечка",
+        "id": 2
+      },
+      {
+        "name": "Три",
+        "image": "https://res.cloudinary.com/lmru/image/upload/LMCode/15632861.jpg",
+        "description": "Ну хотя бы троечка",
+        "id": 3
+      }
+]
+
+
 
 function createElementWithClass(elementType, className) {
     const element = document.createElement(elementType);
@@ -50,7 +75,7 @@ function createCardElement(card, index) {
 
     const divCardRed = createElementWithClass("a", "list-block__card-red");
     divCardRed.id = `cardRed${index}`;
-    divCardRed.addEventListener('click', fillForm);
+    divCardRed.addEventListener('click', ()=>{fillForm(card)});
     divCardRed.pos = index;
     divCardRed.textContent = 'Редактировать';
     divCardBottom.appendChild(divCardRed);
@@ -58,24 +83,57 @@ function createCardElement(card, index) {
     const divCardDel = createElementWithClass("a", "list-block__card-red");
     divCardDel.id = `cardDel${index}`;
     divCardDel.textContent = `Удалить`;
-    divCardDel.addEventListener('click', deleteCard);
+    divCardDel.addEventListener('click', ()=>{deleteCard(card.id)});
     divCardDel.pos = index;
     divCardBottom.appendChild(divCardDel);
 
     return divCard;
 }
 
-function renderCards() {
+async function renderCards() {
+
     const cardsContainer = document.querySelector(".list-block__list");
-    const cardsData = JSON.parse(localStorage.getItem('cards')) || [];
+    const cardsData = await fetchData();
 
     cardsContainer.innerHTML = '';
     cardsData.forEach((card, index) => cardsContainer.appendChild(createCardElement(card, index)));
 }
 
-function standardСards() {
-    localStorage.setItem('cards', JSON.stringify(jsonFileSetUp));
-    renderCards();
+async function standardСards(){
+
+    showLoader();
+
+    const cards = await fetch('http://localhost:3333/items').then(response => response.json());
+
+    if (cards.length === 0) {
+        try {
+            const addCardPromises = standartCardsArray.map(async (newCard) => {
+                const response = await fetch('http://localhost:3333/items', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newCard),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to add card to the server.');
+                }
+            });
+
+            await Promise.all(addCardPromises);
+            
+        } catch (error) {
+            console.error('Error adding card:', error);
+            alert('Failed to add card to the server.');
+            return;
+        }
+    } else {
+        alert('Cards already exist');
+    }
+
+    hideLoader();
+    await renderCards();
 }
 
 function serializeForm(formNode, obj) {
@@ -97,32 +155,80 @@ function serializeForm(formNode, obj) {
     return obj;
 }
 
-function saveCard(event) {
+async function fetchData() {
+    showLoader();
+    try {
+        const response = await fetch('http://localhost:3333/items');
+        if (!response.ok) {
+            throw new Error('Failed to fetch data from the server.');
+        }
+
+        const data = await response.json();
+
+        hideLoader();
+
+        return data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        alert('Failed to fetch data from the server.');
+    }
+}
+
+async function saveCard(event) {
+    showLoader();
+
     const card = serializeForm(applicantForm, {});
 
     if (!card.name || !card.image || !card.description || !card.id) {
-        alert("Поля не заполнены");
+        alert("The fields are not filled in");
         return;
     }
+    try {
+        const response = await fetch('http://localhost:3333/items', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(card),
+        });
 
-    let cards = JSON.parse(localStorage.getItem("cards")) || [];
-    cards.push(card);
-    
-    localStorage.setItem('cards', JSON.stringify(cards));
-    renderCards();
+        if (!response.ok) {
+            throw new Error('Failed to add card to the server.');
+        }
+
+        hideLoader();
+
+        renderCards();
+    } catch (error) {
+        console.error('Error adding card:', error);
+        console.error('Response from server:', await response.text());
+        alert('Failed to add card to the server.');
+    }
 }
 
-function deleteCard(event) {
-    const cards = JSON.parse(localStorage.getItem("cards")) || [];
-    const updatedCards = cards.filter((_, index) => index !== event.target.pos);
+async function deleteCard(event) {
+    showLoader();
+    let response;
+    try {
+        response = await fetch(`http://localhost:3333/items/${event}`, {
+            method: 'DELETE',
+        });
 
-    localStorage.setItem('cards', JSON.stringify(updatedCards));
-    renderCards();
+        if (!response.ok) {
+            throw new Error('Failed to delete card from the server.');
+        }
+
+        renderCards();
+    } catch (error) {
+        console.error('Error deleting card:', error);
+        console.error('Response from server:', await response.text());
+        alert('Failed to delete card from the server.');
+    } finally {
+        hideLoader();
+    }
 }
 
-function fillForm(event) {
-    const cards = JSON.parse(localStorage.getItem("cards")) || [];
-    const card = cards[event.target.pos];
+async function fillForm(card) {
 
     document.getElementsByName('name')[0].value = card.name || '';
     document.getElementsByName('image')[0].value = card.image || '';
@@ -132,20 +238,66 @@ function fillForm(event) {
     document.getElementById('submit-button').classList.add('invisible');
     const editButton = document.getElementById('edit-button');
     editButton.classList.remove('invisible');
-    editButton.pos = event.target.pos;
 }
 
-function editCard(event) {
-    let cards = JSON.parse(localStorage.getItem("cards")) || [];
-    let editedCard = serializeForm(applicantForm, {});
+async function editCard(event) {
+    showLoader();
+    try {
+
+        const editedCard = serializeForm(applicantForm, {});
+        const cardId = editedCard.id
+
+        const response = await fetch(`http://localhost:3333/items/${cardId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(editedCard),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update card on the server.');
+        }
+
+
+        hideLoader();
+
+        document.getElementById('submit-button').classList.remove('invisible');
+        document.getElementById('edit-button').classList.add('invisible');
+
+        renderCards();
+
+    } catch (error) {
+        console.error('Error adding card:', error);
+        console.error('Response from server:', await response.text());
+        alert('Failed to add card to the server.');
+    }
+
+}
+
+async function getProfile(){
+    try {
+        const  response = await fetch('http://localhost:3333/creatorInfo')
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch data from the server.');
+        }
+
+        const data = await response.json();
+
+        document.getElementById('header__text').textContent = data.name + " " + data.group;
+    } catch (error) {
+        alert("Error getting the name: " + error);
+    }
     
-    cards[event.target.pos] = editedCard;
+}
 
-    localStorage.setItem('cards', JSON.stringify(cards));
+function showLoader() {
+    loader.style.display = 'block';
+}
 
-    document.getElementById('submit-button').classList.remove('invisible');
-    document.getElementById('edit-button').classList.add('invisible');
-    renderCards();
+function hideLoader() {
+    loader.style.display = 'none';
 }
 
 const applicantForm = document.getElementById('card-form');
@@ -153,8 +305,13 @@ const setupButton = document.getElementById('setup-button');
 const editButton = document.getElementById('edit-button');
 const submitButton = document.getElementById('submit-button');
 
+const loader = document.getElementById('loader');
+
 setupButton.addEventListener('click', standardСards);
 submitButton.addEventListener('click', saveCard);
 editButton.addEventListener('click', editCard);
 
-renderCards();
+window.addEventListener('load', async () => {
+    await renderCards();
+    await getProfile();
+});

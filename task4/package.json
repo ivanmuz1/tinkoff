@@ -9,9 +9,11 @@
     "preview": "vite preview",
     "prepare": "husky install",
     "prettier": "prettier -w .",
-    "prettier:check": "prettier -c ."
+    "prettier:check": "prettier -c .",
+    "start:server": "json-server -p 3333 --watch baza.json"
   },
   "dependencies": {
+    "json-server": "^0.17.1",
     "normalize.css": "^8.0.1"
   },
   "devDependencies": {
