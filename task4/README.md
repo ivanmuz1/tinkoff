@@ -11,4 +11,4 @@
 
 - `npm i` - для установка зависимостей. 
 - `npm run dev` - запуск сервера.
-- `npm run server` - запуск json сервера.
+- `npm run start:server` - запуск json сервера.
